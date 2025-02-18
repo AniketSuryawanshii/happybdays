@@ -81,37 +81,3 @@ papers.forEach(paper => {
   p.init(paper);
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-  const draggableElements = document.querySelectorAll('.paper.image');
-
-  draggableElements.forEach(element => {
-    element.addEventListener('touchstart', handleTouchStart, false);
-    element.addEventListener('touchmove', handleTouchMove, false);
-    element.addEventListener('touchend', handleTouchEnd, false);
-  });
-
-  let touchStartX = 0;
-  let touchStartY = 0;
-  let isDragging = false;
-
-  function handleTouchStart(e) {
-    const touch = e.touches[0];
-    touchStartX = touch.pageX;
-    touchStartY = touch.pageY;
-    isDragging = true;
-  }
-
-  function handleTouchMove(e) {
-    if (!isDragging) return;
-    const touch = e.touches[0];
-    const deltaX = touch.pageX - touchStartX;
-    const deltaY = touch.pageY - touchStartY;
-    e.target.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-  }
-
-  function handleTouchEnd(e) {
-    if (!isDragging) return;
-    e.target.style.transform = '';
-    isDragging = false;
-  }
-});
