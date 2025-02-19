@@ -90,50 +90,56 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   function pointerDownHandler(e) {
-    // Capture pointer events for the element
-    e.target.setPointerCapture(e.pointerId);
+    // Always work on the paper element (currentTarget)
+    const paper = e.currentTarget;
+    paper.setPointerCapture(e.pointerId);
     
     // Retrieve current transform values (if any)
-    const style = window.getComputedStyle(e.target);
+    const style = window.getComputedStyle(paper);
     const matrix = new DOMMatrixReadOnly(style.transform);
     
-    // Store starting pointer position and initial transform values
-    e.target.dataset.startX = e.clientX;
-    e.target.dataset.startY = e.clientY;
-    e.target.dataset.initialX = matrix.m41;
-    e.target.dataset.initialY = matrix.m42;
-    e.target.dataset.dragging = 'true';
+    // Save starting pointer position and current translation values
+    paper.dataset.startX = e.clientX;
+    paper.dataset.startY = e.clientY;
+    paper.dataset.initialX = matrix.m41;
+    paper.dataset.initialY = matrix.m42;
+    paper.dataset.dragging = 'true';
     
-    // Bring element to the front
-    e.target.style.zIndex = 10000;
+    // Bring paper to front
+    paper.style.zIndex = 10000;
+    e.preventDefault();
   }
 
   function pointerMoveHandler(e) {
-    if (e.target.dataset.dragging !== 'true') return;
+    const paper = e.currentTarget;
+    if (paper.dataset.dragging !== 'true') return;
     
-    // Calculate movement deltas
-    const startX = parseFloat(e.target.dataset.startX);
-    const startY = parseFloat(e.target.dataset.startY);
-    const initialX = parseFloat(e.target.dataset.initialX);
-    const initialY = parseFloat(e.target.dataset.initialY);
+    // Calculate the movement delta
+    const startX = parseFloat(paper.dataset.startX);
+    const startY = parseFloat(paper.dataset.startY);
+    const initialX = parseFloat(paper.dataset.initialX);
+    const initialY = parseFloat(paper.dataset.initialY);
     
     const deltaX = e.clientX - startX;
     const deltaY = e.clientY - startY;
     
-    // Set new transform position
     const newX = initialX + deltaX;
     const newY = initialY + deltaY;
-    e.target.style.transform = `translate(${newX}px, ${newY}px)`;
+    
+    // Apply transform to move the paper as a whole
+    paper.style.transform = `translate(${newX}px, ${newY}px)`;
+    e.preventDefault();
   }
 
   function pointerUpHandler(e) {
-    e.target.dataset.dragging = 'false';
-    e.target.style.zIndex = '';
-    e.target.releasePointerCapture(e.pointerId);
+    const paper = e.currentTarget;
+    paper.dataset.dragging = 'false';
+    paper.style.zIndex = '';
+    paper.releasePointerCapture(e.pointerId);
+    e.preventDefault();
   }
 });
 </script>
-
 
 </body>
 </html>
